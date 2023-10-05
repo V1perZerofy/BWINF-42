@@ -37,5 +37,5 @@ def outputLayout():
             for k in range(dimX):
                 print(layout[k][j][i])
 
-#inputLayoutFromFile("zauberschule0.txt")
+inputLayoutFromFile("zauberschule0.txt")
 outputLayout()

@@ -1,7 +1,7 @@
 import imaplib
 import random
 
-layout = []
+layout = [[[0 for _ in range(1)] for _ in range(1)] for _ in range(1)]
 startX = -1
 startY = -1
 startZ = -1
@@ -17,7 +17,7 @@ def inputLayoutFromFile(file):
     print(dimX)
     print(dimY)
     layout = [[[0 for _ in range(2)] for _ in range(dimY)] for _ in range(dimX)]
-    #outputLayout()
+    outputLayout()
     for i in range(2):
         for j in range(dimY):
             line = list(f.readline())
@@ -28,7 +28,7 @@ def inputLayoutFromFile(file):
                     startY = j
                     startZ = i
         f.readline()
-    #outputLayout()
+    outputLayout()
     print(startX, startY, startZ)
 
 def outputLayout():
@@ -39,3 +39,4 @@ def outputLayout():
 
 inputLayoutFromFile("zauberschule0.txt")
 outputLayout()
+print(layout[0][0][0])

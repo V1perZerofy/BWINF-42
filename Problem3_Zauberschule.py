@@ -11,17 +11,18 @@ def inputLayoutFromFile(file):
     dimX, dimY = map(int, f.readline().split())
     print(dimX)
     print(dimY)
-    layout = [[[0 for _ in range(dimX)] for _ in range(dimY)] for _ in range(2)]
-    #print(layout)
-    for i in range(1):
-        for j in range(dimY - 1):
+    layout = [[[0 for _ in range(2)] for _ in range(dimY)] for _ in range(dimX)]
+    print(layout)
+    for i in range(2):
+        for j in range(dimY):
             line = list(f.readline())
-            for k in range(dimX - 1):
+            for k in range(dimX):
                 layout[k][j][i] = line[k]
-                print(layout)
         f.readline()
     print(layout)
 
 
-
+#test = [[0 for _ in range(2)] for _ in range(3)]
+#[1][0] = 1
+#print(test)
 inputLayoutFromFile("zauberschule0.txt")

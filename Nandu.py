@@ -1,44 +1,33 @@
-#white Block is an xor gate returns to true Boolean values
-class whiteBlock():
-    def __init__(self, inputU, inputD):
-        self.name = "whiteBlock"
-        self.inputU = inputU
-        self.inputD = inputD
-
-    
-    def function(self):
-        if self.inputU and self.inputD:
-            return False, False
-        elif self.inputU and not self.inputD:
-            return True, True
-        elif not self.inputU and self.inputD:
-            return True, True
-        elif not self.inputU and not self.inputD:
-            return True, True
+def read_construction_file(filename):
+    lightcount = 0
+    with open(filename, 'r') as f:
+        n, m = map(int, f.readline().strip().split())
+        construction = [list(f.readline().strip().split()) for _ in range(m)]
         
+        for i in construction[0]:
+            if i.startswith('Q'):
+                lightcount += 1
+    return n, m, construction, lightcount
 
-#red Block only takes one input
-#return two true Boolean values when input is false
-#return two false Boolean values when input is true
-class redBlock():
-    def __init__(self, input):
-        self.name = "redBlock"
-        self.input = input
+def interpretConstruction(n, m, construction, startingLight, lightcount):
+    lightrow = ['O'] * n
+    for i in range(len(construction[0])):
+        if construction[0][i].startswith('Q'):
+            idx = int(construction[0][i][-1]) - 1
+            if 0 <= idx < lightcount:
+                lightrow[i] = 'l' if startingLight[idx] == '1' else 'O'
+    #return lightrow
+    for i in construction[1:-1]:
+        for j in range(len(i)):
+            if i[j] == 'W':
+                if lightrow[j] == 'l':
 
-    def function(self):
-        if self.input:
-            return False, False
-        else:
-            return True, True
-        
-#blue Block takes two inputs
-#returns input values
 
-class blueBlock():
-    def __init__(self, inputU, inputD):
-        self.name = "blueBlock"
-        self.inputU = inputU
-        self.inputD = inputD
+def test_all_flashlight_combinations(n, m, construction, lightcount):
+    for i in range(2**lightcount):
+        flashlights = bin(i)[2:].zfill(lightcount)
+        final_leds = interpretConstruction(n, m, construction, flashlights, lightcount)
+        print("".join(final_leds), flashlights)
 
-    def function(self):
-        return self.inputU, self.inputD
+n, m, construction, lightcount = read_construction_file("bwinf.de_fileadmin_user_upload_nandu1.txt")
+test_all_flashlight_combinations(n, m, construction, lightcount)

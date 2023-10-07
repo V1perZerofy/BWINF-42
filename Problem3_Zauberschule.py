@@ -1,35 +1,38 @@
 import imaplib
 import random
+import numpy as np
 
-layout = []
-dimX, dimY, startX, startY, startZ = -1, -1, -1, -1, -1
-
-def is_valid_position(layout, x, y, z):
-    return layout[x][y][z] == "."
+def is_valid_position(layout, x, y, layer):
+    return layout[layer][x][y] == "."
 
 def inputLayoutFromFile(file):
-    global layout, dimX, dimY
     f = open(file, "r")
-    dimX, dimY = map(int, f.readline().split())
-    layout = [[[0 for _ in range(2)] for _ in range(dimY)] for _ in range(dimX)]
+    dimX, dimY = map(int, f.readline().split(' '))
+    layer = 2
+    layout = np.array([[['' for _ in range(layer)] for _ in range(dimY)] for _ in range(dimX)])
     for i in range(2):
         for j in range(dimY):
             line = list(f.readline())
             for k in range(dimX):
-                layout[k][j][i] = line[k]
+                layout[k, j, i] = line[k]
+                if(layout[k, j, i] == 'A'):
+                    startX, startY, startZ = k, j, i
         f.readline()
+    return layout, dimX, dimY, startX, startY, startZ
 
-def outputLayout():
-    global layout, dimX, dimY
-    for i in range(2):
-        for j in range(dimY):
-            current = ''
-            for k in range(dimX):
-                current = current + str(layout[k][j][i])
-            print(current)
+def findShortestPath(layout, dimX, dimY):
+    print(0 == 0)
+
+def outputLayout(layout, dimY):
+    for i in range(dimY):
+        print(''.join(layout[:, i, 0]))
+    for j in range(dimY):
+        print(''.join(layout[:, j, 1]))
 
 if __name__ == '__main__':
-    inputLayoutFromFile("zauberschule0.txt")
-    outputLayout()
-    #print(layout[1][1][0])
+    layout, dimX, dimY, startX, startY, startZ = inputLayoutFromFile("zauberschule0.txt")
+    print(dimX, dimY)
+    outputLayout(layout, dimY)
+    findShortestPath(layout, dimX, dimY)
+
 

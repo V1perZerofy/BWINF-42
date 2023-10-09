@@ -27,7 +27,7 @@ def inputLayoutFromFile(file):
 
 
 def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer):
-    shortestDistance, goalX, goalY, goalLayer = -1, -1, -1, -1
+    shortestDistance = -1
     x, y, layer = startX, startY, startLayer
     movement = [(1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)]
     data = {}
@@ -41,19 +41,16 @@ def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer)
         #Check for Goal
         if layout[x][y][layer] == "B":
             sPF = True
-            return data, shortestDistance, goalX, goalY, goalLayer
+            return data, shortestDistance, x, y, layer
         #Save new Data
         for dX, dY, dLayer in movement:
             if isValidPosition(layout, dimX, dimY, x + dX, y + dY, layer + dLayer):
-                print("Valid")
                 thisDistance = data[(x, y, layer)][0]
                 thatDistance = data.get((x + dX, y + dY, layer + dLayer), [-1])[0]
                 if dLayer == 0 and (thatDistance == -1  or thatDistance > thisDistance + 1):
                     data[x + dX, y + dY, layer + dLayer] = [thisDistance + 1, (x, y, layer), False]
                 if dLayer != 0 and (thatDistance == -1 or thatDistance > thisDistance + 5):
                     data[x + dX, y + dY, layer + dLayer] = [thisDistance + 5, (x, y, layer), False]
-            else:
-                print("Invalid")
         #Find new Point
         shortestDistance = float('inf')
         newNode = []
@@ -62,7 +59,6 @@ def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer)
                 shortestDistance = values[1][0]
                 newNode = values[0]
         x, y, layer = newNode[0], newNode[1], newNode[2]
-        print(x, y, layer)
         
 
 def outputLayout(layout, dimY):
@@ -73,7 +69,7 @@ def outputLayout(layout, dimY):
 
 
 if __name__ == '__main__':
-    layout, dimX, dimY, startX, startY, startLayer = inputLayoutFromFile("zauberschule0.txt")
+    layout, dimX, dimY, startX, startY, startLayer = inputLayoutFromFile("input/zauberschule0.txt")
     print(dimX, dimY)
     outputLayout(layout, dimY)
     data, distance, goalX, goalY, goalLayer = findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer)

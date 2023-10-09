@@ -53,10 +53,12 @@ def interpretConstruction(n, m, construction, startingLight, lightcount):
     return final_leds
 
 def test_all_flashlight_combinations(n, m, construction, lightcount):
+    print("Testing all flashlight combinations: ")
+    print("Start" + " -> " + "End")
     for i in range(2**lightcount):
         flashlights = bin(i)[2:].zfill(lightcount)
         final_leds = interpretConstruction(n, m, construction, flashlights, lightcount)
-        print(flashlights, "".join(final_leds))
+        print(flashlights + " -> " +  "".join(final_leds))
 
 n, m, construction, lightcount = read_construction_file("bwinf.de_fileadmin_user_upload_nandu1.txt")
 test_all_flashlight_combinations(n, m, construction, lightcount)

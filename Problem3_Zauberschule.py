@@ -4,7 +4,7 @@ import numpy as np
 
 
 def isValidPosition(layout, dimX, dimY, x, y, layer):
-    return layout[x][y][layer] == "." and 0 <= x < dimX and 0 <= y < dimY and 0 <= layer <= 2
+    return layout[x][y][layer] != "#" and 0 <= x < dimX and 0 <= y < dimY and 0 <= layer <= 2
 
 
 def inputLayoutFromFile(file):
@@ -29,13 +29,30 @@ def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer)
     x, y, layer = startX, startY, startLayer
     movement = [(1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)]
     lib = {}
-    lib[startX, startY, startLayer] = 0, None
+    lib[startX, startY, startLayer] = 0, None, True
+    sPF = False
 
-    for dX, dY, dLayer in movement:
-        if isValidPosition(layout, dimX, dimY, x + dX, y + dY, layer + dLayer):
-            print("Valid")
-        else:
-            print("Invalid")
+    while sPF == False:
+        #Check for Goal
+        if layout[x][y][layer] == "B":
+            sPF == True
+            return lib, x, y, layer
+        #Save new Data
+        for dX, dY, dLayer in movement:
+            if isValidPosition(layout, dimX, dimY, x + dX, y + dY, layer + dLayer):
+                print("Valid")
+                thisDistance = lib[(x, y, layer)][0]
+                thatDistance = lib.get((x + dX, y + dY, layer + dLayer), [-1])[0]
+                if dLayer == 0 and (thatDistance == -1  or thatDistance > thisDistance + 1):
+                    lib[x + dX, y + dY, layer + dLayer] = thisDistance + 1, (x, y, layer), False
+                if dLayer != 0 and (thatDistance == -1 or thatDistance > thisDistance + 5):
+                    lib[x + dX, y + dY, layer + dLayer] = thisDistance + 5, (x, y, layer), False
+            else:
+                print("Invalid")
+        #Find shortest unmarked Distance in lib
+        #
+        #
+
 
 
 

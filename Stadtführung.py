@@ -33,11 +33,16 @@ def checkForLoops(stopList):
 def checkForNewStart(stopList):
     print("jo")
 
+def printTour(stopList):
+    for i in range(len(stopList)):
+        print(stopList[i])
+
 if __name__ == '__main__':
     stopList, stopNumber = inputRouteFromFile("input2/tour1.txt")
     print(len(stopList))
     removedStops = checkForLoops(stopList)
     print(len(removedStops))
-    print(removedStops)
-    print(stopList)
+    printTour(removedStops)
+    print("")
+    printTour(stopList)
     print(len(stopList))

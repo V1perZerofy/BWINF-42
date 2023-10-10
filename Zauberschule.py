@@ -1,5 +1,3 @@
-import imaplib
-import random
 import numpy as np
 
 
@@ -10,13 +8,13 @@ def isValidPosition(layout, dimX, dimY, x, y, layer):
 
 def inputLayoutFromFile(file):
     f = open(file, "r")
-    dimX, dimY = map(int, f.readline().split(' '))
+    dimY, dimX = map(int, f.readline().strip().split())
     layer = 2
     layout = np.array([[['' for _ in range(layer)] for _ in range(dimY)] for _ in range(dimX)])
 
     for i in range(2):
         for j in range(dimY):
-            line = list(f.readline())
+            line = list(f.readline().strip())
             for k in range(dimX):
                 layout[k, j, i] = line[k]
                 if(layout[k, j, i] == 'A'):
@@ -24,7 +22,6 @@ def inputLayoutFromFile(file):
         f.readline()
     
     return layout, dimX, dimY, startX, startY, startLayer
-
 
 def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer):
     shortestDistance = -1
@@ -59,17 +56,15 @@ def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer)
                 shortestDistance = values[1][0]
                 newNode = values[0]
         x, y, layer = newNode[0], newNode[1], newNode[2]
-        
-
+  
 def outputLayout(layout, dimY):
     for i in range(dimY):
         print(''.join(layout[:, i, 0]))
     for j in range(dimY):
         print(''.join(layout[:, j, 1]))
 
-
 if __name__ == '__main__':
-    layout, dimX, dimY, startX, startY, startLayer = inputLayoutFromFile("input/zauberschule0.txt")
+    layout, dimX, dimY, startX, startY, startLayer = inputLayoutFromFile("input/zauberschule5.txt")
     print(dimX, dimY)
     outputLayout(layout, dimY)
     data, distance, goalX, goalY, goalLayer = findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer)

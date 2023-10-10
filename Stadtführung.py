@@ -1,19 +1,17 @@
-#import unidecode from unidecode
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 
 def inputRouteFromFile(file):
-    f = open(file, "r")
+    f = open(file, "r", encoding = 'utf-8')
     stopNumber = int(f.readline().strip())
     stopList = []
     for _ in range(stopNumber):
         stopList.append(f.readline().strip().split(","))
-    #for i in range(stopNumber):
-        #stopList[i][0] = unidecode(stopList[i][0])
     return stopList, stopNumber
 
 def checkForLoops(stopList):
     removedStops, elementTested, positionOfElement = [], [-1], -1
-    done = False
 
     while True:
         for i in range(len(stopList)):
@@ -28,21 +26,42 @@ def checkForLoops(stopList):
                 elementTested = stopList[i]
                 positionOfElement = i
         else:
-            return removedStops
+            return stopList, removedStops
         
 def checkForNewStart(stopList):
-    print("jo")
+    frontStops, backStops = [], []
+    mostSavedDistance = -1
+
+    if (stopList[0][2] != "X"):
+        for stop in stopList:
+            if(stop[2] == "X"):
+                break
+            frontStops.append(stop)
+        for stop in reversed(stopList):
+            if(stop[2] == "X"):
+                break
+            backStops.append(stop)
+        
+        return frontStops, backStops
+    return frontStops, backStops
 
 def printTour(stopList):
-    for i in range(len(stopList)):
-        print(stopList[i])
+    for stop in stopList:
+        print(stop)
 
 if __name__ == '__main__':
-    stopList, stopNumber = inputRouteFromFile("input2/tour1.txt")
+    stopList, stopNumber = inputRouteFromFile("input2/tour4.txt")
     print(len(stopList))
-    removedStops = checkForLoops(stopList)
+    printTour(stopList)
+    print("")
+    stopList, removedStops = checkForLoops(stopList)
     print(len(removedStops))
     printTour(removedStops)
     print("")
-    printTour(stopList)
     print(len(stopList))
+    printTour(stopList)
+    print("")
+    frontStops, backStops = checkForNewStart(stopList)
+    printTour(frontStops)
+    print("")
+    printTour(backStops)

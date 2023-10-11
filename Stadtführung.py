@@ -12,7 +12,9 @@ def inputRouteFromFile(file):
     return stopList, stopNumber
 
 def checkForLoops(stopList):
-    removedStops, elementTested, positionOfElement = [], [-1], -1
+    removedStops = []
+    elementTested, positionOfElement =[-1], -1
+    savedDistance = 0
 
     while True:
         for i in range(len(stopList)):
@@ -21,17 +23,21 @@ def checkForLoops(stopList):
                     while(stopList[positionOfElement + 1][0] != elementTested[0]):
                         removedStops.append(stopList[positionOfElement + 1])
                         stopList.pop(positionOfElement + 1)
+                    savedDistance += stopList[positionOfElement + 1][3] - elementTested[3]
+                    savedDistanceATM = stopList[positionOfElement + 1][3] - elementTested[3]
+                    for j in range(positionOfElement + 1, len(stopList)):
+                        stopList[j][3] -= savedDistanceATM
                     elementTested, positionOfElement = [-1], -1
                     break
             if stopList[i][2] == "X":
                 elementTested = stopList[i]
                 positionOfElement = i
         else:
-            return stopList, removedStops
+            return stopList, removedStops, savedDistance
         
 def checkForNewStart(stopList):
     frontStops, backStops = [], []
-    mostSavedDistance = -1
+    savedDistance = 0
     newStart, newEnd = [], []
     removedStopsStart, removedStopsEnd = [], []
 
@@ -48,8 +54,8 @@ def checkForNewStart(stopList):
         backStops = [backStop for backStop in backStops if any(backStop[0] == frontStop[0] for frontStop in frontStops)]
         for frontStop in frontStops:
             for backStop in backStops:
-                if(frontStop[0] == backStop[0] and frontStop[3] + (backStops[0][3] - backStop[3]) > mostSavedDistance):
-                    mostSavedDistance = frontStop[3] + (backStops[0][3] - backStop[3])
+                if(frontStop[0] == backStop[0] and frontStop[3] + (backStops[0][3] - backStop[3]) >= savedDistance):
+                    savedDistance = frontStop[3] + (backStops[0][3] - backStop[3])
                     newStart, newEnd = frontStop, backStop
         while(stopList[0] != newStart):
             removedStopsStart.append(stopList[0])
@@ -57,28 +63,30 @@ def checkForNewStart(stopList):
         while(list(reversed(stopList))[0] != newEnd):
             removedStopsEnd.append(list(reversed(stopList))[0])
             stopList.pop(len(stopList) - 1)
+        for stop in list(reversed(stopList)):
+            stop[3] -= stopList[0][3]
     else:
         newStart, newEnd = stopList[0], list(reversed(stopList))[0]
-    return stopList, removedStopsStart, removedStopsEnd, newStart, newEnd
+    return stopList, removedStopsStart, removedStopsEnd, newStart, newEnd, savedDistance
 
 def printTour(stopList):
     for stop in stopList:
         print(stop)
 
 if __name__ == '__main__':
-    stopList, stopNumber = inputRouteFromFile("input2/tour4.txt")
+    stopList, stopNumber = inputRouteFromFile("input2/tour5.txt")
     print(len(stopList))
     printTour(stopList)
     print("")
-    stopList, removedStopsInLoops = checkForLoops(stopList)
+    stopList, removedStopsInLoops, savedDistanceLoops = checkForLoops(stopList)
     print(len(removedStopsInLoops))
     printTour(removedStopsInLoops)
     print("")
     print(len(stopList))
     printTour(stopList)
     print("")
-    stopList, removedStopsInStart, removedStopsInEnd, newStart, newEnd = checkForNewStart(stopList)
-    print(len(removedStopsInStart) + len(removedStopsInStart))
+    stopList, removedStopsInStart, removedStopsInEnd, newStart, newEnd, savedDistanceStartAndEnd = checkForNewStart(stopList)
+    print(len(removedStopsInStart) + len(removedStopsInEnd))
     printTour(removedStopsInStart)
     print("")
     printTour(removedStopsInEnd)
@@ -87,3 +95,5 @@ if __name__ == '__main__':
     print("")
     print(len(stopList))
     printTour(stopList)
+    print("")
+    print(savedDistanceLoops, savedDistanceStartAndEnd, savedDistanceLoops + savedDistanceStartAndEnd)

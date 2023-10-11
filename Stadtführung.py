@@ -1,5 +1,4 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+import numpy as np
 
 
 def inputRouteFromFile(file):
@@ -8,6 +7,8 @@ def inputRouteFromFile(file):
     stopList = []
     for _ in range(stopNumber):
         stopList.append(f.readline().strip().split(","))
+    for stop in stopList:
+        stop[3] = int(stop[3])
     return stopList, stopNumber
 
 def checkForLoops(stopList):
@@ -31,6 +32,8 @@ def checkForLoops(stopList):
 def checkForNewStart(stopList):
     frontStops, backStops = [], []
     mostSavedDistance = -1
+    newStart, newEnd = [], []
+    removedStopsStart, removedStopsEnd = [], []
 
     if (stopList[0][2] != "X"):
         for stop in stopList:
@@ -41,9 +44,22 @@ def checkForNewStart(stopList):
             if(stop[2] == "X"):
                 break
             backStops.append(stop)
-        
-        return frontStops, backStops
-    return frontStops, backStops
+        frontStops = [frontStop for frontStop in frontStops if any(frontStop[0] == backStop[0] for backStop in backStops)]
+        backStops = [backStop for backStop in backStops if any(backStop[0] == frontStop[0] for frontStop in frontStops)]
+        for frontStop in frontStops:
+            for backStop in backStops:
+                if(frontStop[0] == backStop[0] and frontStop[3] + (backStops[0][3] - backStop[3]) > mostSavedDistance):
+                    mostSavedDistance = frontStop[3] + (backStops[0][3] - backStop[3])
+                    newStart, newEnd = frontStop, backStop
+        while(stopList[0] != newStart):
+            removedStopsStart.append(stopList[0])
+            stopList.pop(0)
+        while(list(reversed(stopList))[0] != newEnd):
+            removedStopsEnd.append(list(reversed(stopList))[0])
+            stopList.pop(len(stopList) - 1)
+    else:
+        newStart, newEnd = stopList[0], list(reversed(stopList))[0]
+    return stopList, removedStopsStart, removedStopsEnd, newStart, newEnd
 
 def printTour(stopList):
     for stop in stopList:
@@ -54,14 +70,20 @@ if __name__ == '__main__':
     print(len(stopList))
     printTour(stopList)
     print("")
-    stopList, removedStops = checkForLoops(stopList)
-    print(len(removedStops))
-    printTour(removedStops)
+    stopList, removedStopsInLoops = checkForLoops(stopList)
+    print(len(removedStopsInLoops))
+    printTour(removedStopsInLoops)
     print("")
     print(len(stopList))
     printTour(stopList)
     print("")
-    frontStops, backStops = checkForNewStart(stopList)
-    printTour(frontStops)
+    stopList, removedStopsInStart, removedStopsInEnd, newStart, newEnd = checkForNewStart(stopList)
+    print(len(removedStopsInStart) + len(removedStopsInStart))
+    printTour(removedStopsInStart)
     print("")
-    printTour(backStops)
+    printTour(removedStopsInEnd)
+    print("")
+    print(newStart, newEnd)
+    print("")
+    print(len(stopList))
+    printTour(stopList)

@@ -1,4 +1,4 @@
-import numpy as np
+#BWINF Runde_1 Aufgabe_5
 
 
 def inputRouteFromFile(file):
@@ -74,7 +74,7 @@ def printTour(stopList):
         print(stop)
 
 if __name__ == '__main__':
-    stopList, stopNumber = inputRouteFromFile("input2/tour5.txt")
+    stopList, stopNumber = inputRouteFromFile("input/tour5.txt")
     print(len(stopList))
     printTour(stopList)
     print("")

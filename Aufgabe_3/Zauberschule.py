@@ -1,3 +1,4 @@
+#BWINF Runde_1 Aufgabe_3
 import numpy as np
 
 
@@ -32,14 +33,11 @@ def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer)
     sPF = False
 
     while sPF == False:
-        #Mark Point
         data[x, y, layer][2] = True
         shortestDistance = data[x, y, layer][0]
-        #Check for Goal
         if layout[x][y][layer] == "B":
             sPF = True
             return data, shortestDistance, x, y, layer
-        #Save new Data
         for dX, dY, dLayer in movement:
             if isValidPosition(layout, dimX, dimY, x + dX, y + dY, layer + dLayer):
                 thisDistance = data[(x, y, layer)][0]
@@ -48,7 +46,6 @@ def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer)
                     data[x + dX, y + dY, layer + dLayer] = [thisDistance + 1, (x, y, layer), False]
                 if dLayer != 0 and (thatDistance == -1 or thatDistance > thisDistance + 5):
                     data[x + dX, y + dY, layer + dLayer] = [thisDistance + 5, (x, y, layer), False]
-        #Find new Point
         shortestDistance = float('inf')
         newNode = []
         for values in data.items():
@@ -57,7 +54,19 @@ def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer)
                 newNode = values[0]
         x, y, layer = newNode[0], newNode[1], newNode[2]
   
-def outputLayout(layout, dimY):
+def outputPath(layout, data, goalX, goalY, goalLayer):
+    followX, followY, followLayer = (goalX, goalY, goalLayer)
+    thisX, thisY, thisLayer = data[goalX, goalY, goalLayer][1]
+    movementSigns = {(1, 0, 0): ">", (-1, 0, 0): "<", (0, 1, 0): "v", (0, -1, 0): "^", (0, 0, 1): "!", (0, 0, -1): "!"}
+
+    while(True):
+        print(layout[thisX, thisY, thisLayer])
+        currentSign = movementSigns[followX - thisX, followY - thisY, followLayer - thisLayer]
+        layout[thisX, thisY, thisLayer] = currentSign
+        if(data.get(data[thisX, thisY, thisLayer][1]) != None):
+            followX, followY, followLayer = thisX, thisY, thisLayer
+            thisX, thisY, thisLayer = data[thisX, thisY, thisLayer][1]
+        else: break
     for i in range(dimY):
         print(''.join(layout[:, i, 0]))
     for j in range(dimY):
@@ -66,7 +75,7 @@ def outputLayout(layout, dimY):
 if __name__ == '__main__':
     layout, dimX, dimY, startX, startY, startLayer = inputLayoutFromFile("input/zauberschule5.txt")
     print(dimX, dimY)
-    outputLayout(layout, dimY)
     data, distance, goalX, goalY, goalLayer = findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer)
+    outputPath(layout, data, goalX, goalY, goalLayer)
     print(distance)
     print(goalX, goalY, goalLayer)

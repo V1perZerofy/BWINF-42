@@ -74,7 +74,7 @@ def printTour(stopList):
         print(stop)
 
 if __name__ == '__main__':
-    stopList, stopNumber = inputRouteFromFile("input/tour5.txt")
+    stopList, stopNumber = inputRouteFromFile("Aufgabe_5/input/tour5.txt")
     print(len(stopList))
     printTour(stopList)
     print("")

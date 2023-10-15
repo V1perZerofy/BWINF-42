@@ -67,15 +67,15 @@ def outputPath(layout, data, goalX, goalY, goalLayer):
             followX, followY, followLayer = thisX, thisY, thisLayer
             thisX, thisY, thisLayer = data[thisX, thisY, thisLayer][1]
         else: break
-    for i in range(dimY):
-        print(''.join(layout[:, i, 0]))
-    for j in range(dimY):
-        print(''.join(layout[:, j, 1]))
+    for i in range(2):
+        for j in range(dimY):
+            print(''.join(layout[:, j, i]))
 
 if __name__ == '__main__':
-    layout, dimX, dimY, startX, startY, startLayer = inputLayoutFromFile("input/zauberschule5.txt")
+    layout, dimX, dimY, startX, startY, startLayer = inputLayoutFromFile("Aufgabe_3/input/zauberschule5.txt")
     print(dimX, dimY)
     data, distance, goalX, goalY, goalLayer = findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer)
     outputPath(layout, data, goalX, goalY, goalLayer)
     print(distance)
     print(goalX, goalY, goalLayer)
+    print(layout)

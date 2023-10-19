@@ -21,6 +21,9 @@ def isValidPosition(cube, dimX, dimY, dimZ, x, y, z):
 
 def inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber):
     global finished
+    if(pieceNumber == len(pieces)):
+                            finished = True
+                            return cube, pieceNumber
     directions = [(pieces[pieceNumber][0], pieces[pieceNumber][1], pieces[pieceNumber][2]), (pieces[pieceNumber][0], pieces[pieceNumber][2], pieces[pieceNumber][1]), 
                 (pieces[pieceNumber][1], pieces[pieceNumber][0], pieces[pieceNumber][2]), (pieces[pieceNumber][1], pieces[pieceNumber][2], pieces[pieceNumber][0]), 
                 (pieces[pieceNumber][2], pieces[pieceNumber][0], pieces[pieceNumber][1]), (pieces[pieceNumber][2], pieces[pieceNumber][1], pieces[pieceNumber][0])]
@@ -47,11 +50,12 @@ def inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber):
                                         break
                                 if(active == False): break
                             if(active == False): break
-                        if(pieceNumber == len(pieces) - 1):
-                            finished = True
-                            return cube, pieceNumber
                         if(active == True):
+                            printCube(cube)
                             inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber + 1)
+                            if(finished == False):
+                                for entry in fixList:
+                                    cube[entry[0], entry[1], entry[2]] = ""
                         if(finished == True):
                             print("now returning")
                             return cube, pieceNumber
@@ -60,12 +64,12 @@ def inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber):
 
 def printCube(cube):
     for i in range(3):
-        for j in range(dimY):
+        for j in range(3):
             print(cube[:, j, i])
         print("")
 
 if __name__ == '__main__':
-    cube, pieces, dimX, dimY, dimZ, numberOfPieces = inputCubeFromFile("Aufgabe_2/input/raetsel1.txt")
+    cube, pieces, dimX, dimY, dimZ, numberOfPieces = inputCubeFromFile("Aufgabe_2/input/raetsel2.txt")
     print(dimX, dimY, dimZ)
     printCube(cube)
     cube, pieceNumber = inputPiece(cube, pieces, dimX, dimY, dimZ, 0)

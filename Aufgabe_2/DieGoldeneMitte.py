@@ -11,12 +11,12 @@ def inputCubeFromFile(file):
     numberOfPieces = int(f.readline().strip())
     pieces = []
     for _ in range(numberOfPieces):
-        pieces.append(f.readline().strip().split())
+        pieces.append(list(map(int, f.readline().strip().split())))
     return cube, pieces, dimX, dimY, dimZ, numberOfPieces
 
 def isValidPosition(cube, dimX, dimY, dimZ, x, y, z):
     if(0 <= x < dimX and 0 <= y < dimY and 0 <= z < dimZ):
-        return cube[x][y][z] == ""
+        return cube[x][y][z] == "" and cube[x][y][z] != 'G'
     return False
 
 def inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber):
@@ -28,16 +28,33 @@ def inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber):
     for k in range(dimZ):
         for j in range(dimY):
             for i in range(dimX):
-                #for direction in directions:
                 if(isValidPosition(cube, dimX, dimY, dimZ, i, j, k)):
-                    cube[i][j][k] = pieceNumber
-                    printCube(cube)
-                    if(pieceNumber == len(pieces) - 1):
-                        finished = True
-                        return cube, pieceNumber
-                    inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber + 1)
-                    if(finished == True):
-                        return cube, pieceNumber
+                    for direction in directions:
+                        active = True
+                        fixList = []
+                        print(direction)
+                        for l in range(direction[0]):
+                            for m in range(direction[1]):
+                                for n in range(direction[2]):
+                                    if(isValidPosition(cube, dimX, dimY, dimZ, i + l, j+ m, k + n)):
+                                        cube[i + l][j + m][k + n] = pieceNumber
+                                        fixList.append([i + l, j + m, k + n])
+                                    else:
+                                        print("broken")
+                                        active = False
+                                        for entry in fixList:
+                                            cube[entry[0], entry[1], entry[2]] = ""
+                                        break
+                                if(active == False): break
+                            if(active == False): break
+                        if(pieceNumber == len(pieces) - 1):
+                            finished = True
+                            return cube, pieceNumber
+                        if(active == True):
+                            inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber + 1)
+                        if(finished == True):
+                            print("now returning")
+                            return cube, pieceNumber
 
     return cube, pieceNumber
 
@@ -52,3 +69,4 @@ if __name__ == '__main__':
     print(dimX, dimY, dimZ)
     printCube(cube)
     cube, pieceNumber = inputPiece(cube, pieces, dimX, dimY, dimZ, 0)
+    printCube(cube)

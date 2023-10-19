@@ -3,11 +3,10 @@ import numpy as np
 import math
 finished = False
 
-
 def inputCubeFromFile(file):
     f = open(file, "r")
     dimX, dimY, dimZ = map(int, f.readline().strip().split())
-    cube = np.array([[["" for _ in range(dimZ)] for _ in range(dimY)] for _ in range(dimX)])
+    cube = np.array([[['' for _ in range(dimZ)] for _ in range(dimY)] for _ in range(dimX)])
     cube[math.floor(dimX / 2), math.floor(dimY / 2), math.floor(dimZ / 2)] = "G"
     numberOfPieces = int(f.readline().strip())
     pieces = []
@@ -21,7 +20,6 @@ def isValidPosition(cube, dimX, dimY, dimZ, x, y, z):
     return False
 
 def inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber):
-    printCube(cube)
     global finished
     directions = [(pieces[pieceNumber][0], pieces[pieceNumber][1], pieces[pieceNumber][2]), (pieces[pieceNumber][0], pieces[pieceNumber][2], pieces[pieceNumber][1]), 
                 (pieces[pieceNumber][1], pieces[pieceNumber][0], pieces[pieceNumber][2]), (pieces[pieceNumber][1], pieces[pieceNumber][2], pieces[pieceNumber][0]), 
@@ -33,14 +31,15 @@ def inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber):
                 #for direction in directions:
                 if(isValidPosition(cube, dimX, dimY, dimZ, i, j, k)):
                     cube[i][j][k] = pieceNumber
-                    if(pieceNumber == 7):
+                    printCube(cube)
+                    if(pieceNumber == len(pieces) - 1):
+                        finished = True
                         return cube, pieceNumber
                     inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber + 1)
-                    if(pieceNumber == 7):
+                    if(finished == True):
                         return cube, pieceNumber
 
     return cube, pieceNumber
-
 
 def printCube(cube):
     for i in range(3):
@@ -52,7 +51,4 @@ if __name__ == '__main__':
     cube, pieces, dimX, dimY, dimZ, numberOfPieces = inputCubeFromFile("Aufgabe_2/input/raetsel1.txt")
     print(dimX, dimY, dimZ)
     printCube(cube)
-    print(numberOfPieces)
-    print(pieces)
     cube, pieceNumber = inputPiece(cube, pieces, dimX, dimY, dimZ, 0)
-    printCube(cube)

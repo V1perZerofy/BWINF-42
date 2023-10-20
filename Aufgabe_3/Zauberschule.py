@@ -2,11 +2,6 @@
 import numpy as np
 
 
-def isValidPosition(layout, dimX, dimY, x, y, layer):
-    if(0 <= x < dimX and 0 <= y < dimY and 0 <= layer < 2):
-        return layout[x][y][layer] != "#"
-    return False
-
 def inputLayoutFromFile(file):
     f = open(file, "r")
     dimY, dimX = map(int, f.readline().strip().split())
@@ -23,6 +18,11 @@ def inputLayoutFromFile(file):
         f.readline()
     
     return layout, dimX, dimY, startX, startY, startLayer
+
+def isValidPosition(layout, dimX, dimY, x, y, layer):
+    if(0 <= x < dimX and 0 <= y < dimY and 0 <= layer < 2):
+        return layout[x][y][layer] != "#"
+    return False
 
 def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer):
     shortestDistance = -1

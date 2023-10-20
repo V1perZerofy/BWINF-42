@@ -12,6 +12,7 @@ def inputCubeFromFile(file):
     pieces = []
     for _ in range(numberOfPieces):
         pieces.append(list(map(int, f.readline().strip().split())))
+    pieces = sorted(pieces, key = lambda x: x[0] * x[1] * x[2], reverse = True)
     return cube, pieces, dimX, dimY, dimZ, numberOfPieces
 
 def isValidPosition(cube, dimX, dimY, dimZ, x, y, z):
@@ -27,7 +28,7 @@ def inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber):
     directions = [(pieces[pieceNumber][0], pieces[pieceNumber][1], pieces[pieceNumber][2]), (pieces[pieceNumber][0], pieces[pieceNumber][2], pieces[pieceNumber][1]), 
                 (pieces[pieceNumber][1], pieces[pieceNumber][0], pieces[pieceNumber][2]), (pieces[pieceNumber][1], pieces[pieceNumber][2], pieces[pieceNumber][0]), 
                 (pieces[pieceNumber][2], pieces[pieceNumber][0], pieces[pieceNumber][1]), (pieces[pieceNumber][2], pieces[pieceNumber][1], pieces[pieceNumber][0])]
-    print(directions)
+    #print(directions)
     for k in range(dimZ):
         for j in range(dimY):
             for i in range(dimX):
@@ -35,7 +36,7 @@ def inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber):
                     for direction in directions:
                         active = True
                         fixList = []
-                        print(direction)
+                        #print(direction)
                         for l in range(direction[0]):
                             for m in range(direction[1]):
                                 for n in range(direction[2]):
@@ -43,7 +44,7 @@ def inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber):
                                         cube[i + l][j + m][k + n] = pieceNumber
                                         fixList.append([i + l, j + m, k + n])
                                     else:
-                                        print("broken")
+                                        #print("broken")
                                         active = False
                                         for entry in fixList:
                                             cube[entry[0], entry[1], entry[2]] = ""
@@ -51,7 +52,10 @@ def inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber):
                                 if(active == False): break
                             if(active == False): break
                         if(active == True):
-                            printCube(cube)
+                            if(pieceNumber < 12):
+                                 print(pieceNumber)
+                            #print("success")
+                            #printCube(cube)
                             inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber + 1)
                             if(finished == False):
                                 for entry in fixList:
@@ -63,14 +67,16 @@ def inputPiece(cube, pieces, dimX, dimY, dimZ, pieceNumber):
     return cube, pieceNumber
 
 def printCube(cube):
-    for i in range(3):
-        for j in range(3):
+    for i in range(len(cube[0][0][:])):
+        for j in range(len(cube[0][:][0])):
             print(cube[:, j, i])
         print("")
 
 if __name__ == '__main__':
-    cube, pieces, dimX, dimY, dimZ, numberOfPieces = inputCubeFromFile("Aufgabe_2/input/raetsel2.txt")
+    cube, pieces, dimX, dimY, dimZ, numberOfPieces = inputCubeFromFile("Aufgabe_2/input/raetsel4.txt")
     print(dimX, dimY, dimZ)
+    print(pieces)
     printCube(cube)
     cube, pieceNumber = inputPiece(cube, pieces, dimX, dimY, dimZ, 0)
     printCube(cube)
+    print("jo")

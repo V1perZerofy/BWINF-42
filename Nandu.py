@@ -24,18 +24,18 @@ def interpretConstruction(n, m, construction, startingLight, lightcount):
             if j < len(i) - 1:
                 if i[j] == 'R' and i[j+1] == 'r':
                     if lightrow[j] == 'O':
-                        lightrow[j] = 'l'
-                        lightrow[j+1] = 'l'
-                    else:
                         lightrow[j] = 'O'
                         lightrow[j+1] = 'O'
+                    else:
+                        lightrow[j] = 'l'
+                        lightrow[j+1] = 'l'
                 if i[j] == 'r' and i[j+1] == 'R':
                     if lightrow[j+1] == 'O':
-                        lightrow[j] = 'l'
-                        lightrow[j+1] = 'l'
-                    else:
                         lightrow[j] = 'O'
                         lightrow[j+1] = 'O'
+                    else:
+                        lightrow[j] = 'l'
+                        lightrow[j+1] = 'l'
             if i[j] == 'W' and i[j+1] == 'W':
                 if lightrow[j] == 'O' and lightrow[j+1] == 'O':
                     lightrow[j] = 'l'

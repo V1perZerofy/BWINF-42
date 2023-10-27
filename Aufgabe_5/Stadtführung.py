@@ -5,11 +5,73 @@ def inputRouteFromFile(file):
     f = open(file, "r", encoding = 'utf-8')
     stopNumber = int(f.readline().strip())
     stopList = []
-    for _ in range(stopNumber):
+    for i in range(stopNumber):
         stopList.append(f.readline().strip().split(","))
-    for stop in stopList:
-        stop[3] = int(stop[3])
-    return stopList, stopNumber
+        stopList[i].append(i)
+    for stop in stopList: stop[3] = int(stop[3])
+    return stopList
+
+def checkForLoop(stop):
+    removedStops = []
+    totalSavedDistance = 0
+    loops = []
+    startPosition = None
+
+    for i in range(len(stopList)):
+        if stopList[i][2] == "X":
+            startPosition = i
+            break
+    print(startPosition)
+    
+    startOfLoops, endOfLoops = [], []
+    for i in range(startPosition, len(stopList)):
+        if any(stopList[i][0] == entry[0] for entry in startOfLoops): endOfLoops.append(stopList[i])
+        startOfLoops.append(stopList[i])
+        if stopList[i][2] == "X":
+            startOfLoops = [start for start in startOfLoops if any(start[0] == end[0] for end in endOfLoops)]
+            for start in startOfLoops:
+                for end in endOfLoops:
+                    if(start[0] == end[0] and start != end):
+                        loops.append((start, end))
+            startOfLoops, endOfLoops = [], []
+
+    return loops
+
+def checkForNewerStart(stopList):
+    removedStops = []
+    totalSavedDistance = 0
+    frontStops, backStops = [], []
+    possibleStarts, loops = [], []
+
+    if (stopList[0][2] != "X"):
+        for stop in stopList:
+            frontStops.append(stop)
+            if(stop[2] == "X"):
+                break
+        for stop in reversed(stopList):
+            backStops.append(stop)
+            if(stop[2] == "X"):
+                break
+        for frontStop in frontStops:
+            for backStop in backStops:
+                if(frontStop[0] == backStop[0]):
+                    possibleStarts.append((frontStop, backStop))
+        startOfLoops, endOfLoops, loops = [], [], []
+        for i in range(2):
+            for i in range(len(stopList)):
+                if any(stopList[i][0] == entry[0] for entry in startOfLoops): endOfLoops.append(stopList[i])
+                startOfLoops.append(stopList[i])
+                if stopList[i][2] == "X":
+                    startOfLoops = [start for start in startOfLoops if any(start[0] == end[0] for end in endOfLoops)]
+                    for start in startOfLoops:
+                        for end in endOfLoops:
+                            if(start[0] == end[0] and start != end):
+                                loops.append((start, end))
+                    startOfLoops, endOfLoops = [], []
+                    stopList = list(reversed(stopList))
+                    break
+
+    return frontStops, backStops, possibleStarts, loops
 
 def checkForLoops(stopList):
     removedStops = []
@@ -34,7 +96,7 @@ def checkForLoops(stopList):
                 positionOfElement = i
         else:
             return stopList, removedStops, savedDistance
-        
+
 def checkForNewStart(stopList):
     frontStops, backStops = [], []
     savedDistance = 0
@@ -50,8 +112,6 @@ def checkForNewStart(stopList):
             if(stop[2] == "X"):
                 break
             backStops.append(stop)
-        frontStops = [frontStop for frontStop in frontStops if any(frontStop[0] == backStop[0] for backStop in backStops)]
-        backStops = [backStop for backStop in backStops if any(backStop[0] == frontStop[0] for frontStop in frontStops)]
         for frontStop in frontStops:
             for backStop in backStops:
                 if(frontStop[0] == backStop[0] and frontStop[3] + (backStops[0][3] - backStop[3]) >= savedDistance):
@@ -60,11 +120,12 @@ def checkForNewStart(stopList):
         while(stopList[0] != newStart):
             removedStopsStart.append(stopList[0])
             stopList.pop(0)
-        while(list(reversed(stopList))[0] != newEnd):
-            removedStopsEnd.append(list(reversed(stopList))[0])
+        while(stopList[len(stopList) - 1] != newEnd):
+            removedStopsEnd.append(stopList[len(stopList) - 1])
             stopList.pop(len(stopList) - 1)
-        for stop in list(reversed(stopList)):
-            stop[3] -= stopList[0][3]
+        cutDistance = stopList[0][3]
+        for stop in stopList:
+            stop[3] -= cutDistance
     else:
         newStart, newEnd = stopList[0], list(reversed(stopList))[0]
     return stopList, removedStopsStart, removedStopsEnd, newStart, newEnd, savedDistance
@@ -74,7 +135,15 @@ def printTour(stopList):
         print(stop)
 
 if __name__ == '__main__':
-    stopList, stopNumber = inputRouteFromFile("Aufgabe_5/input/tour5.txt")
+    stopList = inputRouteFromFile("Aufgabe_5/input/tour4.txt")
+    loops = checkForLoop(stopList)
+    frontStops, backStops, possibleStarts, loops2 = checkForNewerStart(stopList)
+    print(loops)
+    print(frontStops)
+    print(backStops)
+    print(possibleStarts)
+    print(loops2)
+    """
     print(len(stopList))
     printTour(stopList)
     print("")
@@ -97,3 +166,4 @@ if __name__ == '__main__':
     printTour(stopList)
     print("")
     print(savedDistanceLoops, savedDistanceStartAndEnd, savedDistanceLoops + savedDistanceStartAndEnd)
+    """

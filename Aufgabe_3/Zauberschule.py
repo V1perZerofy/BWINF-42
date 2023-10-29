@@ -44,8 +44,8 @@ def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer)
                 thatDistance = data.get((x + dX, y + dY, layer + dLayer), [-1])[0]
                 if dLayer == 0 and (thatDistance == -1  or thatDistance > thisDistance + 1):
                     data[x + dX, y + dY, layer + dLayer] = [thisDistance + 1, (x, y, layer), False]
-                if dLayer != 0 and (thatDistance == -1 or thatDistance > thisDistance + 5):
-                    data[x + dX, y + dY, layer + dLayer] = [thisDistance + 5, (x, y, layer), False]
+                if dLayer != 0 and (thatDistance == -1 or thatDistance > thisDistance + 3):
+                    data[x + dX, y + dY, layer + dLayer] = [thisDistance + 3, (x, y, layer), False]
         shortestDistance = float('inf')
         newNode = []
         for values in data.items():
@@ -78,4 +78,3 @@ if __name__ == '__main__':
     outputPath(layout, data, goalX, goalY, goalLayer)
     print(distance)
     print(goalX, goalY, goalLayer)
-    print(layout)

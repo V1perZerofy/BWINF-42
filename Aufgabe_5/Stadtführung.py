@@ -13,17 +13,16 @@ def inputRouteFromFile(file):
     return route
 
 
-def findLoopsAndIntersectionsInSegment(segment):
+def findLoopsAndIntersectionsInSegment(segmentForStartOfLoops, segmentForEndOfLoops):
     startOfLoops, endOfLoops, graph = [], [], []
-    print(segment)
+    print(segmentForStartOfLoops)
+    if segmentForStartOfLoops != segmentForEndOfLoops: print(segmentForEndOfLoops)
 
-    for point in segment:
-        if any(point[0] == startPoint[0] for  startPoint in startOfLoops): endOfLoops.append(point)
-        startOfLoops.append(point)
-
-    for startPoint in startOfLoops:
-        for endPoint in endOfLoops:
-            if(endPoint[0] == startPoint[0] and endPoint != startPoint): graph.append([startPoint[0], endPoint[3] - startPoint[3], startPoint[4], endPoint[4]])
+    for startPoint in segmentForStartOfLoops:
+        for endPoint in segmentForEndOfLoops:
+            if endPoint[0] == startPoint[0] and endPoint[4] > startPoint[4]:
+                if segmentForStartOfLoops == segmentForEndOfLoops: graph.append([startPoint[0], endPoint[3] - startPoint[3], startPoint[4], endPoint[4]])
+                if segmentForStartOfLoops != segmentForEndOfLoops: graph.append([startPoint[0], startPoint[3] + segmentForEndOfLoops[-1][3] - endPoint[3], startPoint[4], endPoint[4]])
 
     for vertex in graph:
         vertex.append([])
@@ -37,14 +36,14 @@ def findLoopsAndIntersectionsInSegment(segment):
 
 
 def findBestIndependentSetInGraph(graph):
-    removablePoints = []
+    removablePoints = [[], 100]
 
     return removablePoints
 
 
 def findShortestRoute(route):
-    removedPoints = []
-    totalSavedDistance = None
+    removablePoints, removedPoints = [], []
+    totalSavedDistance = 0
     posOfX = []
 
     for i in range(len(route)):
@@ -54,15 +53,28 @@ def findShortestRoute(route):
     if posOfX == []:
         totalSavedDistance = route[-1][3]
         route[-1][3], route[-1][4] = 0, 1
-        return [route[0], route[-1]], route[1:-1], totalSavedDistance
+        return [route[0], route[-1]], route[1:-1], totalSavedDistance 
     
-    for i in range(len(posOfX) - 1):
-    #for i in range(1):
-        graph = findLoopsAndIntersectionsInSegment(route[posOfX[i]:posOfX[i + 1] + 1])
-        removablePoints = findBestIndependentSetInGraph(graph)
-        #removablePoints = [2, 3, 4, 7]
-        for point in removablePoints:
-            savedDistance = route[point][3] - route[point - 1][3]
+    for i in range(len(posOfX) - 1):    
+        graph = findLoopsAndIntersectionsInSegment(route[posOfX[i]:posOfX[i + 1] + 1], route[posOfX[i]:posOfX[i + 1] + 1])
+        #removablePoints += findBestIndependentSetInGraph(graph)
+
+    startOptions = findLoopsAndIntersectionsInSegment(route[:posOfX[0] + 1], route[posOfX[-1]:])
+    maxSavedDistance = 0
+    pointsToBeRemoved = []
+
+    for point in startOptions:
+        graph = findLoopsAndIntersectionsInSegment(route[point[2]:posOfX[0] + 1], route[posOfX[-1]:point[3]])
+        bestset = findBestIndependentSetInGraph(graph)
+        if maxSavedDistance < bestset[1] + point[1]:
+            maxSavedDistance = bestset[1] + point[1]
+            pointsToBeRemoved = list(range(point[2])) + list(range(point[3] + 1, startOptions[-1][3] + 1)) + bestset[0]
+    removablePoints += pointsToBeRemoved
+
+    print(removablePoints)
+    for point in removablePoints:
+            if point - 1 >= 0: savedDistance = route[point][3] - route[point - 1][3]
+            else: savedDistance = route[point][3]
             totalSavedDistance += savedDistance
             for i in range(point + 1, len(route)):
                 route[i][3] -= savedDistance
@@ -78,7 +90,6 @@ def printRoute(route):
         print(point)
 
 
-
 if __name__ == '__main__':
     route = inputRouteFromFile("Aufgabe_5/input/tour5.txt")
     printRoute(route), print("")
@@ -86,4 +97,4 @@ if __name__ == '__main__':
     print(""), print(route), print("")
     print(removedPoints)
     print(route[-1][3])
-    print(totalSavedDistance)  
+    print(totalSavedDistance)

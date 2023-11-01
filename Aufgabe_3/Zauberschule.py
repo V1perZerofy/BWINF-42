@@ -2,6 +2,7 @@
 import numpy as np
 
 
+
 def inputLayoutFromFile(file):
     f = open(file, "r")
     dimY, dimX = map(int, f.readline().strip().split())
@@ -19,10 +20,12 @@ def inputLayoutFromFile(file):
     
     return layout, dimX, dimY, startX, startY, startLayer
 
+
 def isValidPosition(layout, dimX, dimY, x, y, layer):
     if(0 <= x < dimX and 0 <= y < dimY and 0 <= layer < 2):
         return layout[x][y][layer] != "#"
     return False
+
 
 def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer):
     shortestDistance = -1
@@ -53,7 +56,8 @@ def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startLayer)
                 shortestDistance = values[1][0]
                 newNode = values[0]
         x, y, layer = newNode[0], newNode[1], newNode[2]
-  
+
+
 def outputPath(layout, data, goalX, goalY, goalLayer):
     followX, followY, followLayer = (goalX, goalY, goalLayer)
     thisX, thisY, thisLayer = data[goalX, goalY, goalLayer][1]
@@ -70,6 +74,7 @@ def outputPath(layout, data, goalX, goalY, goalLayer):
     for i in range(2):
         for j in range(dimY):
             print(''.join(layout[:, j, i]))
+
 
 if __name__ == '__main__':
     layout, dimX, dimY, startX, startY, startLayer = inputLayoutFromFile("Aufgabe_3/input/zauberschule5.txt")

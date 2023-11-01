@@ -86,7 +86,7 @@ def isInBounds(dimX, dimY, dimZ, x, y, z):
         return True
     return False
 
-def isGood(dimX, dimY, dimZ, x, y, z):
+def isGood(cube, dimX, dimY, dimZ, x, y, z):
     if(0 <= x < dimX and 0 <= y < dimY and 0 <= z < dimZ):
         return cube[x][y][z] == "A"
     return False
@@ -225,6 +225,11 @@ def checkForNewStart(stopList):
 def printTour(stopList):
     for stop in stopList:
         print(stop)
+
+#adds specific elements of a list to another list when condition is met
+#vertex.append([potentialConnection for potentialConnection in graph
+#                        if potentialConnection[0][4] < vertex[0][4] < potentialConnection[1][4]
+#                        or vertex[0][4] < potentialConnection[0][4] < vertex[1][4]])
 
 """
     print(len(stopList))

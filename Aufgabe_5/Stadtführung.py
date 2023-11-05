@@ -13,22 +13,34 @@ def inputRouteFromFile(file):
     return route
 
 
+def getAllCombinationsFromList(list):
+    if len(list) == 0:
+        return [[]]
+    combinations = []
+    for combination in getAllCombinationsFromList(list[1:]):
+        combinations += [combination+[list[0]]]
+        combinations += [combination]
+    return combinations
+
+
 def findLoopsAndIntersectionsInSegment(segmentForStartOfLoops, segmentForEndOfLoops):
-    startOfLoops, endOfLoops, graph = [], [], []
+    graph = []
     print(segmentForStartOfLoops)
     if segmentForStartOfLoops != segmentForEndOfLoops: print(segmentForEndOfLoops)
 
     for startPoint in segmentForStartOfLoops:
         for endPoint in segmentForEndOfLoops:
             if endPoint[0] == startPoint[0] and endPoint[4] > startPoint[4]:
-                if segmentForStartOfLoops == segmentForEndOfLoops: graph.append([startPoint[0], endPoint[3] - startPoint[3], startPoint[4], endPoint[4]])
-                if segmentForStartOfLoops != segmentForEndOfLoops: graph.append([startPoint[0], startPoint[3] + segmentForEndOfLoops[-1][3] - endPoint[3], startPoint[4], endPoint[4]])
+                if segmentForStartOfLoops == segmentForEndOfLoops: graph.append([None, endPoint[3] - startPoint[3], startPoint[4], endPoint[4]])
+                if segmentForStartOfLoops != segmentForEndOfLoops: graph.append([None, startPoint[3], segmentForEndOfLoops[-1][3] - endPoint[3], startPoint[4], endPoint[4]])
 
-    for vertex in graph:
-        vertex.append([])
-        for i in range(len(graph)):
-            if graph[i][2] < vertex[2] < graph[i][3] or vertex[2] < graph[i][2] < vertex[3]:
-                vertex[4].append(i)
+    for i, vertex in enumerate(graph):
+        vertex[0] = i
+        if segmentForStartOfLoops == segmentForEndOfLoops:
+            vertex.append([])
+            for j, vertex2nd in enumerate(graph):
+                if vertex2nd[2] < vertex[2] < vertex2nd[3] or vertex[2] < vertex2nd[2] < vertex[3]:
+                    vertex[4].append(j)
         print(vertex)
     print("")
 
@@ -36,8 +48,25 @@ def findLoopsAndIntersectionsInSegment(segmentForStartOfLoops, segmentForEndOfLo
 
 
 def findBestIndependentSetInGraph(graph):
-    removablePoints = [[], 100]
+    removablePoints = [[], 0]
+    combinations = getAllCombinationsFromList(graph)
 
+    for combination in combinations:
+        for loop in combination:
+            for loop2nd in combination:
+                if any(loop2nd[0] == loopNumber for loopNumber in loop[4]):
+                    break
+            else:
+                savedDistance = sum([loopForDistance[1] for loopForDistance in combination])
+                if(removablePoints[1] < savedDistance):
+                    removablePoints[1] = savedDistance
+                    newIndeces = []
+                    for loopForIndeces in combination:
+                        newIndeces += [loopForIndeces[1:4]]
+                    removablePoints[0] = newIndeces
+            break
+
+    print(removablePoints)
     return removablePoints
 
 
@@ -57,20 +86,22 @@ def findShortestRoute(route):
     
     for i in range(len(posOfX) - 1):    
         graph = findLoopsAndIntersectionsInSegment(route[posOfX[i]:posOfX[i + 1] + 1], route[posOfX[i]:posOfX[i + 1] + 1])
-        #removablePoints += findBestIndependentSetInGraph(graph)
+        removablePoints += findBestIndependentSetInGraph(graph)[0]
 
     startOptions = findLoopsAndIntersectionsInSegment(route[:posOfX[0] + 1], route[posOfX[-1]:])
-    maxSavedDistance = 0
-    pointsToBeRemoved = []
+    pointsToBeRemoved = [[], 0]
 
     for point in startOptions:
-        graph = findLoopsAndIntersectionsInSegment(route[point[2]:posOfX[0] + 1], route[posOfX[-1]:point[3]])
+        graph = findLoopsAndIntersectionsInSegment(route[point[3]:posOfX[0] + 1], route[point[3]:posOfX[0] + 1])
+        graph += findLoopsAndIntersectionsInSegment(route[posOfX[-1]:point[4] + 1], route[posOfX[-1]:point[4] + 1])
         bestset = findBestIndependentSetInGraph(graph)
-        if maxSavedDistance < bestset[1] + point[1]:
-            maxSavedDistance = bestset[1] + point[1]
-            pointsToBeRemoved = list(range(point[2])) + list(range(point[3] + 1, startOptions[-1][3] + 1)) + bestset[0]
-    removablePoints += pointsToBeRemoved
+        currentSavedDistance = bestset[1] + point[1] + point[2]
+        if pointsToBeRemoved[1] < currentSavedDistance:
+            pointsToBeRemoved[1] = currentSavedDistance
+            pointsToBeRemoved[0] = [[point[1], 0, point[3]]] + [[point[2], point[4], route[-1][4]]] + bestset[0]
+    removablePoints += pointsToBeRemoved[0]
 
+    removablePoints = sorted(removablePoints, key = lambda x: x[1], reverse = True)
     print(removablePoints)
     for point in removablePoints:
             if point - 1 >= 0: savedDistance = route[point][3] - route[point - 1][3]

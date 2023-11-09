@@ -25,8 +25,6 @@ def getAllCombinationsFromList(list):
 
 def findLoopsAndIntersectionsInSegment(segmentForStartOfLoops, segmentForEndOfLoops):
     graph = []
-    print(segmentForStartOfLoops)
-    if segmentForStartOfLoops != segmentForEndOfLoops: print(segmentForEndOfLoops)
 
     for startPoint in segmentForStartOfLoops:
         for endPoint in segmentForEndOfLoops:
@@ -41,8 +39,6 @@ def findLoopsAndIntersectionsInSegment(segmentForStartOfLoops, segmentForEndOfLo
             for j, vertex2nd in enumerate(graph):
                 if vertex2nd[2] < vertex[2] < vertex2nd[3] or vertex[2] < vertex2nd[2] < vertex[3]:
                     vertex[4].append(j)
-        print(vertex)
-    print("")
 
     return graph
 
@@ -66,7 +62,6 @@ def findBestIndependentSetInGraph(graph):
                     removablePoints[0] = newIndeces
             break
 
-    print(removablePoints)
     return removablePoints
 
 
@@ -98,20 +93,21 @@ def findShortestRoute(route):
         currentSavedDistance = bestset[1] + point[1] + point[2]
         if pointsToBeRemoved[1] < currentSavedDistance:
             pointsToBeRemoved[1] = currentSavedDistance
-            pointsToBeRemoved[0] = [[point[1], 0, point[3]]] + [[point[2], point[4], route[-1][4]]] + bestset[0]
+            pointsToBeRemoved[0] = bestset[0]
+            if point[3] != 0: pointsToBeRemoved[0] += [[point[1], -1, point[3]]]
+            if point[4] != route[-1][4]: pointsToBeRemoved[0] += [[point[2], point[4], len(route)]]
     removablePoints += pointsToBeRemoved[0]
 
     removablePoints = sorted(removablePoints, key = lambda x: x[1], reverse = True)
     print(removablePoints)
-    for point in removablePoints:
-            if point - 1 >= 0: savedDistance = route[point][3] - route[point - 1][3]
-            else: savedDistance = route[point][3]
-            totalSavedDistance += savedDistance
-            for i in range(point + 1, len(route)):
-                route[i][3] -= savedDistance
-                route[i][4] -= 1
-            removedPoints.append(route[point])
-            route.pop(point)
+    for loop in removablePoints:
+        totalSavedDistance += loop[0]
+        for entry in route[loop[2]:]:
+            entry[3] -= loop[0]
+            entry[4] -= loop[2] - (loop[1] + 1)
+        for index in range(loop[2] - 1, loop[1], -1):
+            removedPoints.append(route[index])
+            route.pop(index)
 
     return route, removedPoints, totalSavedDistance
 

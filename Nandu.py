@@ -20,17 +20,18 @@ def interpretConstruction(n, m, construction, startingLight, lightcount):
             lightrow[i] = 'O'
     startrow = lightrow.copy()
     for i in construction[1:-1]:
-        for j in range(len(i)):
+        j = 0
+        while j in range(len(i)):
             if j < len(i) - 1:
                 if i[j] == 'R' and i[j+1] == 'r':
-                    if lightrow[j] == 'O':
+                    if lightrow[j] == 'l':
                         lightrow[j] = 'O'
                         lightrow[j+1] = 'O'
                     else:
                         lightrow[j] = 'l'
                         lightrow[j+1] = 'l'
                 if i[j] == 'r' and i[j+1] == 'R':
-                    if lightrow[j+1] == 'O':
+                    if lightrow[j+1] == 'l':
                         lightrow[j] = 'O'
                         lightrow[j+1] = 'O'
                     else:
@@ -46,8 +47,10 @@ def interpretConstruction(n, m, construction, startingLight, lightcount):
                 else:
                     lightrow[j] = 'l'
                     lightrow[j+1] = 'l'
+                j += 1
             if i[j] == 'X':
                 lightrow[j] = 'O'
+            j += 1
         #print(lightrow)
     final_leds = ['L' if lightrow[led_item] == 'l' and construction[-1][led_item].startswith("L") else 'X' if construction[-1][led_item].startswith("L") else '' for led_item in range(len(lightrow))]
     return final_leds

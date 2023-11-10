@@ -66,8 +66,7 @@ def doesPathExist(puzzle, start, end, excluded):
 
     return False
 
-def main():
-    n = 11
+def main(n):
     numCount = random.randint(n//2 + 1, n)
     puzzle = generator(n, numCount)
     if puzzle is None:
@@ -77,4 +76,4 @@ def main():
         saveAsTxt(puzzle, n, numCount)
     
 if __name__ == '__main__':
-    main()
+    main(25)

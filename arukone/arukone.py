@@ -2,6 +2,7 @@ import random #for generating random numbers
 from collections import deque
 import math
 import json #for saving the puzzle and solution to a .json file
+from drawArukone import main as draw_puzzle
 
 excluded = []
 paths = []
@@ -30,7 +31,7 @@ def generator(n, numCount): #generate a puzzle
 #save functions
 #save puzzle to file txt
 def saveAsTxt(puzzle, n, numCount):
-    f = open("puzzle.txt", "w")
+    f = open("arukone/exports/puzzle.txt", "w")
     f.write(str(n) + "\n")
     f.write(str(numCount) + "\n")
     for row in puzzle:
@@ -44,7 +45,7 @@ def saveAsJson(puzzle, n, numCount):
         "solution": paths
     }
 
-    with open("exports/puzzle.json", "w") as f:
+    with open("arukone/exports/puzzle.json", "w") as f:
         json.dump(data, f)
 
 #print functions
@@ -110,4 +111,5 @@ def main(n):
         saveAsJson(puzzle, n, numCount)
 
 if __name__ == '__main__':
-    main(60)
+    main(20)
+    draw_puzzle()

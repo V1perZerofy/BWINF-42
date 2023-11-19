@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import json
+import uuid
 
 def get_puzzle_from_json(filename):
     with open(filename, 'r') as f:
@@ -33,12 +34,16 @@ def draw_puzzle(grid, paths):
             if grid[x][y] != 0:
                 ax.text(y + 0.5, n - x - 0.5, str(grid[x][y]), va='center', ha='center', fontweight='bold')
 
+    #save the figure name is the puzzle size + number of numbers + random number for uniqueness + .png
+    filename = str(uuid.uuid4())[:8]
+    plt.savefig('arukone/exports/pictures/' + str(n) + "_" + filename + '.png', dpi=300, bbox_inches='tight', pad_inches=0)
+
     plt.axis('off')
     plt.show()
 
 def main():
     # Get puzzle from .json file
-    puzzle, paths = get_puzzle_from_json("puzzle.json")
+    puzzle, paths = get_puzzle_from_json("arukone/exports/puzzle.json")
     draw_puzzle(puzzle, paths)
 
 if __name__ == "__main__":

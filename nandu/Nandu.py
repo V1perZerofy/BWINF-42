@@ -63,5 +63,5 @@ def test_all_flashlight_combinations(n, m, construction, lightcount):
         final_leds = interpretConstruction(n, m, construction, flashlights, lightcount)
         print(flashlights + " -> " +  "".join(final_leds))
 
-n, m, construction, lightcount = read_construction_file("Input/bwinf.de_fileadmin_user_upload_nandu1.txt")
+n, m, construction, lightcount = read_construction_file("nandu/Input/bwinf.de_fileadmin_user_upload_nandu1.txt")
 test_all_flashlight_combinations(n, m, construction, lightcount)

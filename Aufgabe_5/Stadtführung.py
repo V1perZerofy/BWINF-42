@@ -21,7 +21,7 @@ def inputRouteFromFile(file):
         route.append(f.readline().strip().split(","))
 
         #if a line does not contain the accepted number of data entries an error message is returned
-        if len(route[i]) is not 4: return "data of stop has wrong number of entries"
+        if len(route[i]) != 4: return "data of stop has wrong number of entries"
 
         #if a line of the input is not a valid an error message is returned
         yearOfStop, importanceOfStop, distanceValueOfStop = route[i][1], route[i][2], route[i][3]
@@ -258,15 +258,24 @@ def printRoute(route):
 #main
 if __name__ == '__main__':
 
-    #the input route is read and printed to the console
+    #the error message is printed to the console if an error occured
     route = inputRouteFromFile("Aufgabe_5/input/tour5.txt")
-    printRoute(route), print("")
+    if isinstance(route, str) is True:
+        print("Error")
+        print(route)
 
-    #the best route is calculated and printed to the console
-    route, removedPoints, totalSavedDistance = findShortestRoute(route)
-    print(""), print(route), print("")
+    #execution of code if no error occured
+    else:
 
-    #the removed points, the new distance and the saved distance are printed to the console
-    print(removedPoints)
-    print(route[-1][3])
-    print(totalSavedDistance)
+        #the input route is read and printed to the console
+        route = inputRouteFromFile("Aufgabe_5/input/tour5.txt")
+        printRoute(route), print("")
+        
+        #the best route is calculated and printed to the console
+        route, removedPoints, totalSavedDistance = findShortestRoute(route)
+        print(""), print(route), print("")
+
+        #the removed points, the new distance and the saved distance are printed to the console
+        print(removedPoints)
+        print(route[-1][3])
+        print(totalSavedDistance)

@@ -3,6 +3,7 @@ from collections import deque
 import math
 import json #for saving the puzzle and solution to a .json file
 from drawArukone import main as draw_puzzle
+import time
 
 excluded = []
 paths = []
@@ -26,6 +27,7 @@ def generator(n, numCount): #generate a puzzle
         if not placed: #if the number was not placed
             return None  #return None to indicate that the number pair could not be placed (this will cause the puzzle to be regenerated)
     return puzzle, paths #return the puzzle and the paths	
+
 
 
 #save functions
@@ -101,15 +103,18 @@ def reconstruct_path(came_from, current): #reconstruct the path
     return total_path[::-1] #return the total path in reverse order (start to end)
 
 def main(n): 
-    numCount = random.randint(n//2, n)
+    numCount = random.randint(n, n*2)
     puzzle, path = generator(n, numCount)
     if puzzle is None:
         print('Failed to generate a puzzle')
     else:
         print_puzzle(puzzle, n, numCount)
-        saveAsTxt(puzzle, n, numCount)
+        #saveAsTxt(puzzle, n, numCount)
         saveAsJson(puzzle, n, numCount)
 
 if __name__ == '__main__':
-    main(20)
+    time_start = time.perf_counter()
+    main(30)
+    time_end = time.perf_counter()
+    print('{:5.3f}s'.format(time_end-time_start), end='  ')
     draw_puzzle()

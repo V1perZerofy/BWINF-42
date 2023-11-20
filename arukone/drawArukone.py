@@ -38,6 +38,13 @@ def draw_puzzle(grid, paths):
     filename = str(uuid.uuid4())[:8]
     plt.savefig('arukone/exports/pictures/' + str(n) + "_" + filename + '.png', dpi=300, bbox_inches='tight', pad_inches=0)
 
+    #save the figure as txt with the same name
+    f = open('arukone/exports/pictures/' + str(n) + "_" + filename + '.txt', "w")
+    f.write(str(n) + "\n")
+    f.write(str(len(paths)) + "\n")
+    for row in grid:
+        f.write(' '.join(map(str, row)) + "\n")
+    f.close()
     plt.axis('off')
     plt.show()
 

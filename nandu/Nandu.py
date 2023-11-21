@@ -63,10 +63,10 @@ def test_all_flashlight_combinations(n, m, construction, lightcount): #test all 
     for i in range(2**lightcount): #for each flashlight combination
         flashlights = bin(i)[2:].zfill(lightcount) #get the binary representation of the number and pad it with 0s to the length of the number of lights
         final_leds = interpretConstruction(n, m, construction, flashlights, lightcount) #interpret the construction
-        print(flashlights + " -> " +  "".join(final_leds)) #print the flashlight combination and the final state of the LEDs
+        print(flashlights + " -> " +  "".join(final_leds) + "\\" + "\\") #print the flashlight combination and the final state of the LEDs
 
 start = time.time() #start the timer
 n, m, construction, lightcount = read_construction_file("nandu/Input/nandu5.txt") #read the construction file and get the number of rows, number of columns, the construction, and the number of lights
 test_all_flashlight_combinations(n, m, construction, lightcount) #test all flashlight combinations
 end = time.time() #end the timer
-print('{:5.3f}s'.format(end-start), end='  ')
+print('{:5.4f}s'.format(end-start), end='  ')

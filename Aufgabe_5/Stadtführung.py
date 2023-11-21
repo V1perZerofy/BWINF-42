@@ -1,4 +1,5 @@
 #BWINF Runde_1 Aufgabe_5
+import time as t
 
 
 
@@ -48,7 +49,7 @@ def getAllCombinationsFromList(list):
         return [[]]
     
     #for every combination of a list, that is the current input list without the first entry,
-    #the combination itself and the combination + the first list of the current input list are added to the return list
+    #the combination itself and the combination + the first entry of the current input list are added to the return list
     combinations = []
     for combination in getAllCombinationsFromList(list[1:]):
         combinations += [combination]
@@ -145,6 +146,7 @@ def findBestIndependentSetInGraph(graph):
                 removableLoops[0] = newRemovableLoops
 
     #the list containing the best set of loops is returned
+    print(removableLoops)
     return removableLoops
 
 
@@ -258,8 +260,11 @@ def printRoute(route):
 #main
 if __name__ == '__main__':
 
+    #the time calculation starts and the input layout is read
+    start = t.perf_counter()
+    route = inputRouteFromFile("Aufgabe_5/input/tour2.txt")
+
     #the error message is printed to the console if an error occured
-    route = inputRouteFromFile("Aufgabe_5/input/tour5.txt")
     if isinstance(route, str) is True:
         print("Error")
         print(route)
@@ -267,15 +272,15 @@ if __name__ == '__main__':
     #execution of code if no error occured
     else:
 
-        #the input route is read and printed to the console
-        route = inputRouteFromFile("Aufgabe_5/input/tour5.txt")
+        #the input route is printed to the console
         printRoute(route), print("")
         
         #the best route is calculated and printed to the console
         route, removedPoints, totalSavedDistance = findShortestRoute(route)
-        print(""), print(route), print("")
+        print(""), printRoute(route), print("")
 
-        #the removed points, the new distance and the saved distance are printed to the console
+        #the removed points, the new distance and the saved distance as well as the taken time are printed to the console
         print(removedPoints)
-        print(route[-1][3])
         print(totalSavedDistance)
+        end = t.perf_counter()
+        print(end - start)

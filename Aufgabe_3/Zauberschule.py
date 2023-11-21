@@ -1,5 +1,6 @@
 #BWINF Runde_1 Aufgabe_3
 import numpy as np
+import time as t
 
 
 
@@ -75,14 +76,14 @@ def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startZ):
     x, y, z = startX, startY, startZ
     movement = [(1, 0, 0), (-1, 0, 0), (0, 1, 0), (0, -1, 0), (0, 0, 1), (0, 0, -1)]
 
-    #library that saved distance to start, predecessor and visit status for coordinates is initialized and data of starting point is entered
+    #library that saves distance to start, predecessor and visit status for coordinates is initialized and data of starting point is entered
     data = {}
     data[startX, startY, startZ] = [0, None, True]
 
     #iterates through different positions till the goal is found or all positions where checked
     while True:
 
-        #current position are marked in library
+        #current position is marked in library
         data[x, y, z][2] = True
 
         #if the current position is the goal, the collected path information, the shortest distance from the start to the goal and the coordinates of the goal is returned
@@ -103,9 +104,9 @@ def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startZ):
                 #if that is the case the library entry to the new position is overwritten with the new distance, the current position as the predecessor and the previous visit status
                 #if there was no previous entry, a new one is created with the calculated distance, the current position as the predecessor and the visit status as False
                 if dZ == 0 and (distanceToNewPosition > distanceToCurrentPosition + 1):
-                    data[x + dX, y + dY, z + dZ] = [distanceToCurrentPosition + 1, (x, y, z), data.get((x + dX, y + dY, z + dZ), [False])[0]]
+                    data[x + dX, y + dY, z + dZ] = [distanceToCurrentPosition + 1, (x, y, z), data.get((x + dX, y + dY, z + dZ), [None, None, False])[2]]
                 if dZ != 0 and (distanceToNewPosition > distanceToCurrentPosition + 3):
-                    data[x + dX, y + dY, z + dZ] = [distanceToCurrentPosition + 3, (x, y, z), data.get((x + dX, y + dY, z + dZ), [False])[0]]
+                    data[x + dX, y + dY, z + dZ] = [distanceToCurrentPosition + 3, (x, y, z), data.get((x + dX, y + dY, z + dZ), [None, None, False])[2]]
 
         #to find a new position a tuple saving the new position and an integer saving the current shortst distance are initialized
         shortestDistance = float('inf')
@@ -171,31 +172,40 @@ def outputPath(layout, data, goalX, goalY, goalZ):
 #main
 if __name__ == '__main__':
 
+    #the time calculation starts and the input layout is read
+    start = t.perf_counter()
+    layout = inputLayoutFromFile("Aufgabe_3/input/zauberschule5.txt")
+
     #the error message is printed to the console if an error occured
-    if isinstance(inputLayoutFromFile("Aufgabe_3/input/zauberschule0.txt"), str):
+    if isinstance(layout, str):
         print("Error")
-        print(inputLayoutFromFile("Aufgabe_3/input/zauberschule0.txt"))
+        print(layout)
 
     #execution of code if no error occured
     else:
 
-        #the input layout is read and its dimensions and the start coordinates are printed to the console
-        layout, dimX, dimY, startX, startY, startZ = inputLayoutFromFile("Aufgabe_3/input/zauberschule5.txt")
+        #the dimensions and start coordinates are printed to the console
+        layout, dimX, dimY, startX, startY, startZ = layout
         print(dimX, dimY)
         print(startX, startY, startZ)
 
+        #the shortest path to the goal is calculated
+        data = findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startZ)
+
         #the error message is printed to the console if an error occured
-        if isinstance(findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startZ), str):
+        if isinstance(data, str):
             print("Error")
-            print(findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startZ))
+            print(data)
 
         #execution of code if no error occured
         else:
 
-            #the shortest path to the goal is calculated and printed to the console
-            data, distance, goalX, goalY, goalZ = findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startZ)
+            #the shortest path is printed to the console
+            data, distance, goalX, goalY, goalZ = data
             outputPath(layout, data, goalX, goalY, goalZ)
 
-            #the goal coordinates and the distance from start to goal is printed to the console
+            #the goal coordinates and the distance from start to goal as well as the taken time are printed to the console
             print(goalX, goalY, goalZ)
             print(distance)
+            end = t.perf_counter()
+            print(end - start)

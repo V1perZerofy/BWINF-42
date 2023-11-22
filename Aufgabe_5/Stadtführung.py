@@ -262,7 +262,7 @@ if __name__ == '__main__':
 
     #the time calculation starts and the input layout is read
     start = t.perf_counter()
-    route = inputRouteFromFile("Aufgabe_5/input/tour2.txt")
+    route = inputRouteFromFile("Aufgabe_5/input/tour5.txt")
 
     #the error message is printed to the console if an error occured
     if isinstance(route, str) is True:

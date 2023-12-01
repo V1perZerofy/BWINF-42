@@ -42,8 +42,8 @@ def inputLayoutFromFile(file):
                     goalFound = True
 
                 #if an invalid character is contained in the input an error message is returned
-                if (layout[k, j, i] == 'A' or 'B' or '#' or '.') == False: return "layout has wrong syntax"
-
+                if (layout[k, j, i] == 'A' or layout[k, j, i] == 'B' or layout[k, j, i] == '#' or layout[k, j, i] == '.') == False: return "layout has wrong syntax"
+        
         #the empty line between the layers is skipped
         f.readline()
 

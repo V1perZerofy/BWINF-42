@@ -40,13 +40,13 @@ def inputLayoutFromFile(file):
                     startX, startY, startZ = k, j, i
                 if(layout[k, j, i] == 'B'):
                     goalFound = True
-                
+
                 #if an invalid character is contained in the input an error message is returned
                 if (layout[k, j, i] == 'A' or 'B' or '#' or '.') == False: return "layout has wrong syntax"
-        
+
         #the empty line between the layers is skipped
         f.readline()
-    
+
     #if the start coordinates or the goal were not found an error message is returned
     if startX == -1 or goalFound == False: print("no start coordinates or goal where found")
 
@@ -89,7 +89,7 @@ def findShortestPathWithDijkstra(layout, dimX, dimY, startX, startY, startZ):
         #if the current position is the goal, the collected path information, the shortest distance from the start to the goal and the coordinates of the goal is returned
         if layout[x][y][z] == "B":
             return data, shortestDistance, x, y, z
-        
+
         #iteration through all six directions from current position
         for dX, dY, dZ in movement:
 
@@ -163,7 +163,7 @@ def outputPath(layout, data, goalX, goalY, goalZ):
         #the individual rows are read from the layout, converted to a string and printed to the console
         for j in range(dimY):
             print(''.join(layout[:, j, i]))
-        
+
         #an empty line is printed to the console to easily differentiate between layers
         print("")
 

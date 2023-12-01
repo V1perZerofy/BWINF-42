@@ -47,7 +47,7 @@ def getAllCombinationsFromList(list):
     #if the input list is empty an empty list is returned
     if len(list) == 0:
         return [[]]
-    
+
     #for every combination of a list, that is the current input list without the first entry,
     #the combination itself and the combination + the first entry of the current input list are added to the return list
     combinations = []
@@ -119,7 +119,7 @@ def findBestIndependentSetInGraph(graph):
                 listOfIndecesOfIntersectingLoops, checkedLoopIndex = loop1stDegree[4], loop2ndDegree[0]
                 if any(checkedLoopIndex == loopIndex for loopIndex in listOfIndecesOfIntersectingLoops):
                     break
-            
+
             #if the checked loop does not intersect, the continue statement skips the following break statement, so that the loop can continue
             else:
                 continue
@@ -129,7 +129,7 @@ def findBestIndependentSetInGraph(graph):
 
         #if all loops in the combination are non-intersecting, the combination is tested on the total saved length
         else:
-            
+
             #the sum of all distances in the combination is calculated
             savedDistance = sum([loop[1] for loop in set])
 
@@ -211,7 +211,7 @@ def findShortestRoute(route):
         route[-1][3], route[-1][4] = 0, 1
         removedPoints = route[1:-1]
         return [route[0], route[-1]], removedPoints, totalSavedDistance 
-    
+
     #for every interval between two important points, all loops are found and the best set of them is added to the removable loops list
     for i in range(len(posOfX) - 1):
         startOfInterval, endOfInterval = posOfX[i], posOfX[i + 1]
@@ -262,7 +262,7 @@ if __name__ == '__main__':
 
     #the time calculation starts and the input layout is read
     start = t.perf_counter()
-    route = inputRouteFromFile("Aufgabe_5/input/tour2.txt")
+    route = inputRouteFromFile("Aufgabe_5/input/tour5.txt")
 
     #the error message is printed to the console if an error occured
     if isinstance(route, str) is True:
@@ -274,7 +274,7 @@ if __name__ == '__main__':
 
         #the input route is printed to the console
         printRoute(route), print("")
-        
+
         #the best route is calculated and printed to the console
         route, removedPoints, totalSavedDistance = findShortestRoute(route)
         print(""), printRoute(route), print("")
